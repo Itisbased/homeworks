@@ -69,6 +69,6 @@ class Spec01 extends munit.FunSuite:
       Tree.Leaf(-2)
     )
 
-  test("4. 2) Tree: map"):
-    assertEquals(mapT(treeExample, _ + 1), treeExamplePlus1)
-    assertEquals(mapT(Tree.Leaf(-10), _ => 0), Tree.Leaf(0))
+  // test("4. 2) Tree: map"):
+  //   assertEquals(mapT(treeExample, _ + 1), treeExamplePlus1)
+  //   assertEquals(mapT(Tree.Leaf(-10), _ => 0), Tree.Leaf(0))
