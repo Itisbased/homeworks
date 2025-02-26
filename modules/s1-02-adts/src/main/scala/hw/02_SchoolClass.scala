@@ -26,5 +26,26 @@ class Genius extends Enlightened
   * реализации класса проверить его на примере — начать класс с гения и
   * "скатиться" до KnowNothing
   */
-class SchoolClass(collection: Seq[KnowNothing]):
-  def accept(students: Seq[KnowNothing]): SchoolClass = new SchoolClass(collection ++ students)
+
+class SchoolClass[T <: KnowNothing](val collection: Seq[T]):
+  def accept[S <: KnowNothing](students: Seq[S]): SchoolClass[Min[T, S]] =
+    new SchoolClass[Min[T, S]](collection ++ students)
+
+type Min[A <: KnowNothing, B <: KnowNothing] <: KnowNothing = A match
+  case Genius => B
+  case Enlightened => B match
+    case Genius => A
+    case _ => B
+  case Normal => B match
+    case Genius | Enlightened => A
+    case _ => B
+  case PoorlyEducated => B match
+    case Genius | Enlightened | Normal => A
+    case _ => B
+  case KnowSomething => B match
+    case Genius | Enlightened | Normal | PoorlyEducated => A
+    case _ => B
+  case Aggressive => B match
+    case Genius | Enlightened | Normal | PoorlyEducated | KnowSomething => A
+    case _ => B
+  case KnowNothing => KnowNothing
