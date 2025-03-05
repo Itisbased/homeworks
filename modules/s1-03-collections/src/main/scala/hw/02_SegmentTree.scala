@@ -64,7 +64,16 @@ sealed trait SegmentTree[A]:
   *          /  \   / \   / \   / \
   *         5    2 4   0 6   7 0   0
   */
-  def update(idx: Int, a: A): SegmentTree[A] = ???
+  def update(idx: Int, a: A): SegmentTree[A] = this match
+    case Leaf(i, _, monoid) if i == idx => Leaf(i, a, monoid)
+    case Node(_, start, end, left, right, monoid) =>
+      if idx <= left.endIdx then
+        val newLeft = left.update(idx, a)
+        Node(monoid.combine(newLeft.value, right.value), start, end, newLeft, right, monoid)
+      else
+        val newRight = right.update(idx, a)
+        Node(monoid.combine(left.value, newRight.value), start, end, left, newRight, monoid)
+    case _ => this
 
   /**
   * II. 3.
@@ -80,7 +89,13 @@ sealed trait SegmentTree[A]:
   *  SegmentTree(5, 2, 4, 1, 6, 7)(Monoid.intSum).calc(1, 5) = 20
   *  SegmentTree(5, 2, 4, 1, 6, 7)(Monoid.intSum).calc(1, 4) = 13
   */
-  def calc(from: Int, to: Int): A = ???
+  def calc(from: Int, to: Int): A = this match
+    case Leaf(idx, value, monoid) if from <= idx && idx <= to => value
+    case Leaf(_, _, monoid) => monoid.empty
+    case Node(value, start, end, left, right, monoid) =>
+      if to < start || from > end then monoid.empty
+      else if from <= start && end <= to then value
+      else monoid.combine(left.calc(from, to), right.calc(from, to))
 
 case class Leaf[A](idx: Int, value: A, monoid: Monoid[A]) extends SegmentTree[A]:
   val startIdx = idx
@@ -114,8 +129,17 @@ object SegmentTree:
    *          /  \   / \   / \   / \
    *         5    2 4   1 6   7 0   0
    */
-  def apply[A](values: A*)(monoid: Monoid[A]): SegmentTree[A] = ???
+  def apply[A](values: A*)(monoid: Monoid[A]): SegmentTree[A] =
+    def build(start: Int, end: Int): SegmentTree[A] =
+      if start == end then
+        Leaf(start, values(start), monoid)
+      else
+        val mid = (start + end) / 2
+        val left = build(start, mid)
+        val right = build(mid + 1, end)
+        Node(monoid.combine(left.value, right.value), start, end, left, right, monoid)
 
+    build(0, values.length - 1)
   /**
     * II. 4. Вопрос: как будет выглядеть код, если вам потребуется считать результаты нескольких операций
     *    на одной одной и той же последовательности элементов?
