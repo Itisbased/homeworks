@@ -91,7 +91,7 @@ sealed trait SegmentTree[A]:
   */
   def calc(from: Int, to: Int): A = this match
     case Leaf(idx, value, monoid) if from <= idx && idx <= to => value
-    case Leaf(_, _, monoid) => monoid.empty
+    case Leaf(_, _, monoid)                                   => monoid.empty
     case Node(value, start, end, left, right, monoid) =>
       if to < start || from > end then monoid.empty
       else if from <= start && end <= to then value
@@ -131,8 +131,7 @@ object SegmentTree:
    */
   def apply[A](values: A*)(monoid: Monoid[A]): SegmentTree[A] =
     def build(start: Int, end: Int): SegmentTree[A] =
-      if start == end then
-        Leaf(start, values(start), monoid)
+      if start == end then Leaf(start, values(start), monoid)
       else
         val mid = (start + end) / 2
         val left = build(start, mid)
@@ -140,6 +139,7 @@ object SegmentTree:
         Node(monoid.combine(left.value, right.value), start, end, left, right, monoid)
 
     build(0, values.length - 1)
+
   /**
     * II. 4. Вопрос: как будет выглядеть код, если вам потребуется считать результаты нескольких операций
     *    на одной одной и той же последовательности элементов?
