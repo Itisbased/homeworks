@@ -13,7 +13,11 @@ package hw
   * есть несколько разных чисел с одинаковой (максимальной) частотой, то удалить
   * их все
   */
-def removeMostFrequent(numbers: Seq[Int]): Seq[Int] = ???
+def removeMostFrequent(numbers: Seq[Int]): Seq[Int] =
+  val freqMap = numbers.groupBy(identity).view.mapValues(_.size).toMap
+  val maxFreq = freqMap.values.maxOption.getOrElse(0)
+  val toRemove = freqMap.collect { case (num, freq) if freq == maxFreq => num }.toSet
+  numbers.filterNot(toRemove)
 
 /** 2.
   *
@@ -22,7 +26,11 @@ def removeMostFrequent(numbers: Seq[Int]): Seq[Int] = ???
   * из соседних элементов нет, то среднее необходимо считать не по 3, а по 2 или
   * 1 значению.
   */
-def smoothNumbers(numbers: Seq[Int]): Seq[Double] = ???
+def smoothNumbers(numbers: Seq[Int]): Seq[Double] =
+  numbers.indices.map { i =>
+    val neighbors = numbers.slice((i - 1) max 0, (i + 2) min numbers.length)
+    neighbors.sum.toDouble / neighbors.size
+  }
 
 case class User(
   lastName: String,
@@ -37,7 +45,8 @@ case class User(
   * возраст) Нужно отсортировать его в следующем порядке: фамилия (лекс) ->
   * возраст (по убыванию) -> имя (лекс) -> отчество (лекс)
   */
-def sortUsers(users: Seq[User]): Seq[User] = ???
+def sortUsers(users: Seq[User]): Seq[User] =
+  users.sortBy(u => (u.lastName, -u.age, u.firstName, u.middleName))
 
 /** 4.
   *
@@ -45,7 +54,7 @@ def sortUsers(users: Seq[User]): Seq[User] = ???
   *
   * powersOfTwo = 2 #:: 4 #:: 8 #:: 16 #:: 32 ...
   */
-val powersOfTwo: LazyList[BigInt] = ???
+val powersOfTwo: LazyList[BigInt] = LazyList.iterate(BigInt(2))(_ * 2)
 
 /** 5.
   *
@@ -56,4 +65,7 @@ val powersOfTwo: LazyList[BigInt] = ???
   * В этой задаче не требуется оптимальный алгоритм, ожидается что хотя бы
   * вычисление первой 1000 простых чисел будет корректно работать.
   */
-val sieveEratosthene: LazyList[Int] = ???
+lazy val sieveEratosthene: LazyList[Int] =
+  def sieve(stream: LazyList[Int]): LazyList[Int] =
+    stream.head #:: sieve(stream.tail.filter(_ % stream.head != 0))
+  sieve(LazyList.from(2))
