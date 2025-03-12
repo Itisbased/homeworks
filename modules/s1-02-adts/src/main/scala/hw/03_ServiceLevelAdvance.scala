@@ -21,16 +21,6 @@ class Platinum extends Business
   * уровень обслуживания. Подсказку, как именно модифицировать, вы найдете в
   * тестах.
   */
-trait LevelUpgrade[L, H]
-
-object LevelUpgrade:
-  given LevelUpgrade[Economy, UpgradedEconomy] = new LevelUpgrade[Economy, UpgradedEconomy] {}
-  given LevelUpgrade[UpgradedEconomy, Special1b] = new LevelUpgrade[UpgradedEconomy, Special1b] {}
-  given LevelUpgrade[Economy, ExtendedEconomy] = new LevelUpgrade[Economy, ExtendedEconomy] {}
-  given LevelUpgrade[ExtendedEconomy, Business] = new LevelUpgrade[ExtendedEconomy, Business] {}
-  given LevelUpgrade[Business, Elite] = new LevelUpgrade[Business, Elite] {}
-  given LevelUpgrade[Business, Platinum] = new LevelUpgrade[Business, Platinum] {}
-
-class ServiceLevelAdvance[L]:
-  def advance[H](using LevelUpgrade[L, H]): ServiceLevelAdvance[H] =
-    new ServiceLevelAdvance[H]
+class ServiceLevelAdvance[T <: Economy]:
+  def advance[U <: T]: ServiceLevelAdvance[U] =
+    new ServiceLevelAdvance[U]

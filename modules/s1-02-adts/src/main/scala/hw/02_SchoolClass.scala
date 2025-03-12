@@ -27,25 +27,6 @@ class Genius extends Enlightened
   * "скатиться" до KnowNothing
   */
 
-class SchoolClass[T <: KnowNothing](val collection: Seq[T]):
-  def accept[S <: KnowNothing](students: Seq[S]): SchoolClass[Min[T, S]] =
-    new SchoolClass[Min[T, S]](collection ++ students)
-
-type Min[A <: KnowNothing, B <: KnowNothing] <: KnowNothing = A match
-  case Genius => B
-  case Enlightened => B match
-    case Genius => A
-    case _ => B
-  case Normal => B match
-    case Genius | Enlightened => A
-    case _ => B
-  case PoorlyEducated => B match
-    case Genius | Enlightened | Normal => A
-    case _ => B
-  case KnowSomething => B match
-    case Genius | Enlightened | Normal | PoorlyEducated => A
-    case _ => B
-  case Aggressive => B match
-    case Genius | Enlightened | Normal | PoorlyEducated | KnowSomething => A
-    case _ => B
-  case KnowNothing => KnowNothing
+class SchoolClass[T <: KnowNothing](collection: Seq[T]):
+  def accept[S >: T <: KnowNothing](students: Seq[S]): SchoolClass[S] =
+    new SchoolClass[S](collection ++ students)

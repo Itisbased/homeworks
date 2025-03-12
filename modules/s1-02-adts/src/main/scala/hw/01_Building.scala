@@ -35,26 +35,27 @@ enum Gender:
 
 case class Resident(age: Int, gender: Gender)
 
-case class Business(name: String)
-
-enum AtticType:
-  case Empty
-  case Commercial(business: Business)
-
-enum Floor:
-  case ResidentialFloor(resident1: Resident, resident2: Resident, next: Option[Floor])
-  case Attic(kind: AtticType)
-  case Commercial(businesses: List[Business], next: Option[Floor])
-
-case class Building(address: String, firstFloor: Floor)
+case class Building(address: String, firstFloor: Building.Floor)
 
 object Building:
+  case class Business(name: String)
+
+  enum AtticType:
+    case Empty
+    case Commercial(business: Business)
+
+  enum Floor:
+    case ResidentialFloor(resident1: Resident, resident2: Resident, next: Option[Floor])
+    case Attic(kind: AtticType)
+    case Commercial(businesses: List[Business], next: Option[Floor])
+
   private def nextFloor(floor: Floor): Option[Floor] = floor match
     case Floor.ResidentialFloor(_, _, next) => next
     case Floor.Commercial(_, next)          => next
     case Floor.Attic(_)                     => None
+
   def fold[T](building: Building, accumulator: T)(f: (T, Floor) => T): T =
-    @annotation.tailrec
+    @tailrec
     def loop(floor: Option[Floor], acc: T): T = floor match
       case Some(curr_floor) => loop(nextFloor(curr_floor), f(acc, curr_floor))
       case None             => acc
@@ -64,22 +65,22 @@ object Building:
   def countOldManFloors(building: Building, olderThan: Int): Int =
     fold(building, 0) { (count, floor) =>
       floor match
-        case Floor.Residential(r1, r2, _) if 
-          (r1.gender == Gender.Male && r1.age > olderThan) ||
-          (r2.gender == Gender.Male && r2.age > olderThan) 
-               => count + 1 
+        case Floor.ResidentialFloor(r1, r2, _)
+            if (r1.gender == Gender.Male && r1.age > olderThan) ||
+              (r2.gender == Gender.Male && r2.age > olderThan) =>
+          count + 1
         case _ => count
     }
-    
+
   def womanMaxAge(building: Building): Option[Int] =
     fold(building, Option.empty[Int]) { (maxAge, floor) =>
       floor match
-        case Floor.Residential(r1, r2, _) =>
+        case Floor.ResidentialFloor(r1, r2, _) =>
           val femaleAges = List(r1, r2).collect { case Resident(age, Gender.Female) => age }
-                  (maxAge ++ femaleAges).maxOption
+          (maxAge ++ femaleAges).maxOption
         case _ => maxAge
     }
-  
+
   def countCommercial(building: Building): Int =
     fold(building, 0) { (count, floor) =>
       floor match
@@ -91,4 +92,4 @@ object Building:
 def countCommercialAvg(buildings: List[Building]): Double =
   buildings match
     case Nil  => 0.0
-    case list => list.map(countCommercial).sum.toDouble / list.length
+    case list => list.map(Building.countCommercial).sum.toDouble / list.length

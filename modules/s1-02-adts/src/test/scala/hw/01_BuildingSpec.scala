@@ -8,19 +8,19 @@ class BuildingSpec extends munit.FunSuite:
   val woman2 = Resident(100, Gender.Female)
   val middleMan = Resident(50, Gender.Male)
 
-  val shop = Business("Магазин")
-  val cafe = Business("Кафе")
-  val bar = Business("Бар")
-  val office = Business("Офис")
+  val shop = Building.Business("Магазин")
+  val cafe = Building.Business("Кафе")
+  val bar = Building.Business("Бар")
+  val office = Building.Business("Офис")
 
   val building1 = Building(
     "Ленина 10",
-    Floor.Residential(
+    Building.Floor.ResidentialFloor(
       youngMan, woman1, Some(
-        Floor.Residential(
+        Building.Floor.ResidentialFloor(
           oldMan, woman2, Some(
-            Floor.Commercial(List(shop, cafe), Some(
-              Floor.Attic(AtticType.Commercial(bar))
+            Building.Floor.Commercial(List(shop, cafe), Some(
+              Building.Floor.Attic(Building.AtticType.Commercial(bar))
             ))
           )
         )
@@ -30,32 +30,32 @@ class BuildingSpec extends munit.FunSuite:
 
   val building2 = Building(
     "Без стариков",
-    Floor.Residential(
+    Building.Floor.ResidentialFloor(
       youngMan, woman1, Some(
-        Floor.Commercial(List(shop), None)
+        Building.Floor.Commercial(List(shop), None)
       )
     )
   )
 
   val building3 = Building(
     "Женский дом",
-    Floor.Residential(
+    Building.Floor.ResidentialFloor(
       woman1, woman2, Some(
-        Floor.Attic(AtticType.Empty)
+        Building.Floor.Attic(Building.AtticType.Empty)
       )
     )
   )
 
   val building4 = Building(
     "Торговый центр",
-    Floor.Commercial(List(shop, cafe, office), Some(
-      Floor.Attic(AtticType.Commercial(bar))
+    Building.Floor.Commercial(List(shop, cafe, office), Some(
+      Building.Floor.Attic(Building.AtticType.Commercial(bar))
     ))
   )
 
   val emptyBuilding = Building(
     "Пустой дом",
-    Floor.Attic(AtticType.Empty)
+    Building.Floor.Attic(Building.AtticType.Empty)
   )
 
   test("countOldManFloors should return the number of floors with old men") {
@@ -88,10 +88,10 @@ class BuildingSpec extends munit.FunSuite:
 
   test("countCommercialAvg should return the average number of commercial establishments") {
     val buildings = List(building1, building4)
-    assertEquals(Building.countCommercialAvg(buildings), 3.5)
+    assertEquals(countCommercialAvg(buildings), 3.5)
   }
 
   test("countCommercialAvg should return 0.0 if no buildings have commercial establishments") {
     val buildings = List(building3, emptyBuilding)
-    assertEquals(Building.countCommercialAvg(buildings), 0.0)
+    assertEquals(countCommercialAvg(buildings), 0.0)
   }
