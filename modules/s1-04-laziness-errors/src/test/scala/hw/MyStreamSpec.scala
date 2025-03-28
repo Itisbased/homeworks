@@ -20,7 +20,7 @@ class MyStreamSpec extends munit.FunSuite:
 
   test("flatMap"):
     val result = fibonacci
-      .flatMap { a => MyStream(a, MyStream(a, MyStream(a, Empty))) }
+      .flatMap { a => MyStream(a, MyStream(a, MyStream(a, MyStream.Empty))) }
       .take(15)
     
     assertEquals(result, List(0, 0, 0, 1, 1, 1, 1, 1, 1, 2, 2, 2, 3, 3, 3))
