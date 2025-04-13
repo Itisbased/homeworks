@@ -76,8 +76,9 @@ class FastStorage(delegate: AuthorService, cache: Ref[Map[Int, String]]) extends
   override def get(idx: Int): UIO[Option[Author]] =
     getCached(idx).flatMap {
       case Some(author) => ZIO.succeed(Some(author))
-      case None => delegate.get(idx).flatMap {
-        case Some(author) => putCached(author).as(Some(author))
-        case None => ZIO.succeed(None)
-      }
+      case None =>
+        delegate.get(idx).flatMap {
+          case Some(author) => putCached(author).as(Some(author))
+          case None         => ZIO.succeed(None)
+        }
     }

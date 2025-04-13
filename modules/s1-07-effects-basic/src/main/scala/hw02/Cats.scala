@@ -78,8 +78,9 @@ class FastStorage(delegate: AuthorService, cache: Ref[IO, Map[Int, String]]) ext
   override def get(idx: Int): IO[Option[Author]] =
     getCached(idx).flatMap {
       case Some(author) => IO.pure(Some(author))
-      case None => delegate.get(idx).flatMap {
-        case Some(author) => putCached(author).as(Some(author))
-        case None => IO.pure(None)
-      }
+      case None =>
+        delegate.get(idx).flatMap {
+          case Some(author) => putCached(author).as(Some(author))
+          case None         => IO.pure(None)
+        }
     }
