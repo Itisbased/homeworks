@@ -60,6 +60,51 @@ lazy val `s1-04-laziness-errors` = (project in file(s"modules/$s1_04"))
     )
   )
 
+val s1_05 = "s1-05-type-classes"
+
+lazy val `s1-05-type-classes` = (project in file(s"modules/$s1_05"))
+  .settings(commonSettings)
+  .settings(
+    name := s1_05,
+    libraryDependencies ++= Seq(
+      cats,
+      munit
+    )
+  )
+
+val s1_06 = "s1-06-concurrency"
+
+lazy val `s1-06-concurrency` = (project in file(s"modules/$s1_06"))
+  .settings(commonSettings)
+  .settings(
+    name := s1_06,
+    libraryDependencies ++= Seq(
+      scalatest
+    )
+  )
+
+val s1_07 = "s1-07-effects-basic"
+
+lazy val `s1-07-effects-basic` = (project in file(s"modules/$s1_07"))
+  .settings(commonSettings)
+  .settings(
+    name := s1_07,
+    libraryDependencies ++= Seq(
+      scalatest, ce, cetest, zio, ziotest
+    )
+  )
+
+val s1_08 = "s1-08-effects-di"
+
+lazy val `s1-08-effects-di` = (project in file(s"modules/$s1_08"))
+  .settings(commonSettings)
+  .settings(
+    name := s1_08,
+    libraryDependencies ++= Seq(
+      scalatest, ce, cetest, zio, ziotest
+    )
+  )
+
 lazy val `root` = (project in file("."))
   .settings(
     name           := "root",
@@ -69,7 +114,11 @@ lazy val `root` = (project in file("."))
     `s1-01-scala-intro`,
     `s1-02-adts`,
     `s1-03-collections`,
-    `s1-04-laziness-errors`
+    `s1-04-laziness-errors`,
+    `s1-05-type-classes`,
+    `s1-06-concurrency`,
+    `s1-07-effects-basic`,
+    `s1-08-effects-di`
   )
 
 lazy val moduleKeys: Map[String, String] =
@@ -77,7 +126,11 @@ lazy val moduleKeys: Map[String, String] =
     s1_01,
     s1_02,
     s1_03,
-    s1_04
+    s1_04,
+    s1_05,
+    s1_06,
+    s1_07,
+    s1_08
   ).map(x => x.take(5) -> x).toMap
 
 commands += Command.command("hw") { state =>
