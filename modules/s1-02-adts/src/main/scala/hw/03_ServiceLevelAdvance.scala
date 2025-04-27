@@ -21,6 +21,6 @@ class Platinum extends Business
   * уровень обслуживания. Подсказку, как именно модифицировать, вы найдете в
   * тестах.
   */
-class ServiceLevelAdvance {
-  def advance: ServiceLevelAdvance = new ServiceLevelAdvance
-}
+class ServiceLevelAdvance[T <: Economy]:
+  def advance[U <: T]: ServiceLevelAdvance[U] =
+    new ServiceLevelAdvance[U]
