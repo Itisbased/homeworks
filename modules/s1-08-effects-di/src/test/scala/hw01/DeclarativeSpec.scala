@@ -3,7 +3,6 @@ package hw01
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers
 
-import scala.util.{Failure, Success, Try}
 import scala.util.control.NoStackTrace
 
 class CustomEffectTests extends AnyFlatSpec with Matchers:

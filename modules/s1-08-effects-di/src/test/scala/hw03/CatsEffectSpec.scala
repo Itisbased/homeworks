@@ -4,7 +4,6 @@ import cats.effect.*
 import cats.effect.kernel.Ref
 import cats.effect.std.Random
 import cats.effect.testing.scalatest.AsyncIOSpec
-import cats.syntax.all.*
 import org.scalatest.flatspec.AsyncFlatSpec
 import org.scalatest.matchers.should.Matchers
 import scala.concurrent.duration.*
