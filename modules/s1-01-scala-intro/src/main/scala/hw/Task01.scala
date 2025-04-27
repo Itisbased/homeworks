@@ -12,7 +12,13 @@ package hw
   *  swap(100) = 1
   *  swap(42) = swap(24)
   */
-def swap(x: Long): Long = ???
+def swap(x: Long): Long =
+  @annotation.tailrec
+  def loop(n: Long, acc: Long): Long =
+    if (n == 0) acc
+    else loop(n / 10, acc * 10 + (n % 10))
+
+  loop(x, 0)
 
 /**
   * 2. Реализуйте метод, возвращающий n-ое число последовательности:
@@ -27,7 +33,13 @@ def swap(x: Long): Long = ???
   *  selfRepeat(10) = 5
   *  selfRepeat(42) = 9
   */
-def selfRepeat(n: Int): Int = ???
+def selfRepeat(n: Int): Int =
+  @annotation.tailrec
+  def loop(i: Int, count: Int): Int =
+    if (n <= count + i - 1) i
+    else loop(i + 1, count + i)
+
+  loop(1, 0)
 
 /**
   * 3. Фибоначчи, делящиеся на k
@@ -54,7 +66,14 @@ def selfRepeat(n: Int): Int = ???
   *
   *    fibDiv(10, 2) = 832040
   */
-def fibDiv(k: Int, n: Int): Long = ???
+def fibDiv(k: Int, n: Int): Long =
+  @annotation.tailrec
+  def loop(f1: Long, f2: Long, count: Int): Long =
+    if (count >= n) f1
+    else if (f2 % k == 0) loop(f2, f1 + f2, count + 1)
+    else loop(f2, f1 + f2, count)
+
+  loop(0, 1, 0)
 
 /**
   * 4. (* опционально) Максимум в дереве
@@ -89,7 +108,14 @@ import Tree.*
   *
   *
   */
-def maxT(tree: Tree): Int = ???
+def maxT(tree: Tree): Int =
+  @annotation.tailrec
+  def loop(stack: List[Tree], currMax: Int): Int = stack match
+    case Nil                             => currMax
+    case Leaf(curr) :: tail              => loop(tail, currMax max curr)
+    case Node(curr, left, right) :: tail => loop(left :: right :: tail, currMax max curr)
+
+  loop(List(tree), tree.value)
 
 /**
   * 4.2
