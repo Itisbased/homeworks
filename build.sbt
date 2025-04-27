@@ -1,4 +1,4 @@
-import org.typelevel.scalacoptions.{ScalaVersion, ScalacOption, ScalacOptions}
+import org.typelevel.scalacoptions.ScalacOptions
 import deps.*
 import sbt.internal.*
 import StateSyntax.*
