@@ -13,11 +13,11 @@ before_script:
 compile:
   stage: compile
   script:
-    - sbt "compile; Test / compile"
+    - sbt compile
 
 test:
   stage: test
   only:
-    - solution-.*
+    - /^solution-.*/
   script:
     - sbt hw
