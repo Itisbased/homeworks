@@ -28,35 +28,68 @@ package hw
   *      писать не обязательно
   */
 
-type Resident // rewrite me
-type Gender // rewrite me
+import scala.annotation.tailrec
 
-type Building // rewrite me
+enum Gender:
+  case Male, Female
+
+case class Resident(age: Int, gender: Gender)
+
+case class Building(address: String, firstFloor: Building.Floor)
 
 object Building:
-  type Business // rewrite me
-  type Commercial // rewrite me
-  type Floor // rewrite me
-  type Attic // rewrite me
-  type ResidentialFloor // rewrite me
+  case class Business(name: String)
 
-  /** Проходится по зданию снизу в вверх, применяя функцию [[f]] на каждом этаже
-    * с начальным аккумулятором [[accumulator]]
-    */
-  def fold[T](building: Building, accumulator: T)(f: (T, Floor) => T): T = ???
+  enum AtticType:
+    case Empty
+    case Commercial(business: Business)
 
-  /** Подсчитывает количество этажей, на которых живет хотя бы один мужчина
-    * старше [[olderThan]]. Используйте [[fold]]
-    */
-  def countOldManFloors(building: Building, olderThan: Int): Int = ???
+  enum Floor:
+    case ResidentialFloor(resident1: Resident, resident2: Resident, next: Option[Floor])
+    case Attic(kind: AtticType)
+    case Commercial(businesses: List[Business], next: Option[Floor])
 
-  /** Находит наибольший возраст женьщины, проживающей в здании. Используйте
-    * [[fold]]
-    */
-  def womanMaxAge(building: Building): Option[Int] = ???
+  private def nextFloor(floor: Floor): Option[Floor] = floor match
+    case Floor.ResidentialFloor(_, _, next) => next
+    case Floor.Commercial(_, next)          => next
+    case Floor.Attic(_)                     => None
 
-  /** Находит кол-во коммерческих заведений в здании. Используйте [[fold]] */
-  def countCommercial(building: Building): Int = ???
+  def fold[T](building: Building, accumulator: T)(f: (T, Floor) => T): T =
+    @tailrec
+    def loop(floor: Option[Floor], acc: T): T = floor match
+      case Some(curr_floor) => loop(nextFloor(curr_floor), f(acc, curr_floor))
+      case None             => acc
 
-  /** Находит среднее кол-во коммерческих заведений в зданиях. Используйте [[fold]] */
-  def countCommercialAvg(building: List[Building]): Double = ???
+    loop(Some(building.firstFloor), accumulator)
+
+  def countOldManFloors(building: Building, olderThan: Int): Int =
+    fold(building, 0) { (count, floor) =>
+      floor match
+        case Floor.ResidentialFloor(r1, r2, _)
+            if (r1.gender == Gender.Male && r1.age > olderThan) ||
+              (r2.gender == Gender.Male && r2.age > olderThan) =>
+          count + 1
+        case _ => count
+    }
+
+  def womanMaxAge(building: Building): Option[Int] =
+    fold(building, Option.empty[Int]) { (maxAge, floor) =>
+      floor match
+        case Floor.ResidentialFloor(r1, r2, _) =>
+          val femaleAges = List(r1, r2).collect { case Resident(age, Gender.Female) => age }
+          (maxAge ++ femaleAges).maxOption
+        case _ => maxAge
+    }
+
+  def countCommercial(building: Building): Int =
+    fold(building, 0) { (count, floor) =>
+      floor match
+        case Floor.Commercial(businesses, _)      => count + businesses.size
+        case Floor.Attic(AtticType.Commercial(_)) => count + 1
+        case _                                    => count
+    }
+
+def countCommercialAvg(buildings: List[Building]): Double =
+  buildings match
+    case Nil  => 0.0
+    case list => list.map(Building.countCommercial).sum.toDouble / list.length

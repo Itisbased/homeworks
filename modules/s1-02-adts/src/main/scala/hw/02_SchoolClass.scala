@@ -26,5 +26,7 @@ class Genius extends Enlightened
   * реализации класса проверить его на примере — начать класс с гения и
   * "скатиться" до KnowNothing
   */
-class SchoolClass(collection: Seq[KnowNothing]):
-  def accept(students: Seq[KnowNothing]): SchoolClass = new SchoolClass(collection ++ students)
+
+class SchoolClass[T <: KnowNothing](collection: Seq[T]):
+  def accept[S >: T <: KnowNothing](students: Seq[S]): SchoolClass[S] =
+    new SchoolClass[S](collection ++ students)
