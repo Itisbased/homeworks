@@ -33,7 +33,11 @@ object Executable:
           * @return эффект для Tuple2[A, B] или ошибка
           */
     def both[B](other: Effect[B]): Effect[(A, B)] =
-      ???
+      Effect(() =>
+        fa.safeRun() match
+          case Success(a) => other.safeRun().map(b => (a, b))
+          case Failure(e) => Failure(e)
+      )
 
 object Declarative:
 
@@ -90,7 +94,7 @@ object Declarative:
           * @return эффект для Tuple2[A, B] или ошибка
           */
     def zip[B](other: Effect[E, B]): Effect[E, (A, B)] =
-      ???
+      effect.flatMap(a => other.map(b => (a, b)))
 
   object Effect:
     def pure[A](value: => A): Effect[Nothing, A] =
