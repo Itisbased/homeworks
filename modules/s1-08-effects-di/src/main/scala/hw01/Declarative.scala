@@ -51,13 +51,23 @@ object Declarative:
         * Добавьте эффекту в декларативной кодировке возможность восстанавливаться из ошибки
         */
     def recover(f: E => A): Effect[Nothing, A] =
-      ???
+      effect match
+        case EffectSuccess(value) => EffectSuccess(value)
+        case EffectFailure(error) => EffectSuccess(f(error))
+        case Delay(dalayed)       => Delay(() => dalayed().recover(f))
+        case FlatMap(parent, g) =>
+          parent.flatMap(x => g(x).recover(f)).asInstanceOf[Effect[Nothing, A]]
 
     /**
         * Добавьте эффекту в декларативной кодировке возможность восстанавливаться из ошибки
         */
     def recoverWith(f: E => Effect[E, A]): Effect[E, A] =
-      ???
+      effect match
+        case EffectSuccess(value) => EffectSuccess(value)
+        case EffectFailure(error) => f(error)
+        case Delay(dalayed)       => Delay(() => dalayed().recoverWith(f))
+        case FlatMap(parent, g) =>
+          parent.flatMap(x => g(x).recoverWith(f))
 
   object Effect:
     def pure[A](value: => A): Effect[Nothing, A] =
