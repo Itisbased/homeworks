@@ -1,29 +1,24 @@
-# Задания
+# Домашние задания по Scala
 
-## Для выполнения заданий
-Отпочкуйте от `main` ветку `solutions`, в которую потом будете делать пулл реквесты с домашними заданиями
+Этот репозиторий содержит мои решения домашних заданий по курсу Scala (ФП, МФТИ). Здесь представлены различные задания, охватывающие основы языка, работу с коллекциями, эффекты, типовые классы, монады, обработку ошибок, конкурентность и другие темы.
 
-## Как выполнять задания
-Перед выполнением каждого (!) задания
-1. Ребейзните ветку `solutions` вашего форка на `master` ветку этого репозитория
-2. Отпочкуйте ветку c именем начинающимся на `solution-${номер семестра (s1/s2)}-${номер задания, для однозначных начиная с 0}`
-   *Например, для 1-го задания 1-го семестра имя ветки будет `solution-s1-01`*
-3. Реализуйте домашнее задание в этой ветке в соответствующем модуле проекта
-4. Проверьте, что
-   - тесты проходят успешно с помощью `sbt` команды `hw` (определена в `build.sbt`)
-   - код отформатирован c помощью команды `scalafmtCheckAll`
-5. Сделайте пулл реквест в ветку `solutions`.
-   Убедитесь, что пайплайн зеленый и отправьте ментору на проверку через edu.
-   Если ваш пайплайн красный, но вы уверены, что тесты успешно проходят, отправляйте задание на проверку через edu и пишите о проблемах в телеграм чат.
+## Все решения собраны в ветке `solutions`.
 
-## Задания
+## Структура репозитория
 
-- [s1-01](/modules/s1-01-scala-intro/src/main/scala/hw/Task01.scala)
-- [s1-02](/modules/s1-02-adts/src/main/scala/hw)
-- [s1-03](/modules/s1-03-collections/src/main/scala/hw)
-- [s1-04](/modules/s1-04-laziness-errors/src/main/scala/hw)
-- [s1-05](/modules/s1-05-type-classes/src/main/scala/hw)
-- [s1-06](/modules/s1-06-concurrency/src/main/scala/hw)
-- [s1-07](/modules/s1-07-effects-basic/src/main/scala)
-- [s1-08](/modules/s1-08-effects-di/src/main/scala)
-- [s1-09](/modules/s1-09-functor-flatmap/main/scala/ru/mipt/fp/README.md)
+- Каждое задание находится в отдельном модуле внутри папки `modules/`.
+- Для каждого задания есть исходный код (`src/main/scala`) и тесты (`src/test/scala`).
+- Ссылки на задания приведены ниже.
+
+## Список заданий
+
+- [s1-01: Введение в Scala](/modules/s1-01-scala-intro/src/main/scala/hw/Task01.scala)
+- [s1-02: ADT и классы](/modules/s1-02-adts/src/main/scala/hw)
+- [s1-03: Коллекции](/modules/s1-03-collections/src/main/scala/hw)
+- [s1-04: Ленивость и ошибки](/modules/s1-04-laziness-errors/src/main/scala/hw)
+- [s1-05: Типовые классы](/modules/s1-05-type-classes/src/main/scala/hw)
+- [s1-06: Конкурентность](/modules/s1-06-concurrency/src/main/scala/hw)
+- [s1-07: Базовые эффекты](/modules/s1-07-effects-basic/src/main/scala)
+- [s1-08: DI и эффекты](/modules/s1-08-effects-di/src/main/scala)
+- [s1-09: Функторы и flatMap](/modules/s1-09-functor-flatmap/main/scala/ru/mipt/fp/README.md)
+- [s1-10: Монады и обработка ошибок](/modules/s1-10-monad-errors/src/main/scala/ru/mipt/fp)
